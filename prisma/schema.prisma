@@ -1,0 +1,166 @@
+// Prisma schema for neighborhood social network services
+// Adjust as needed.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  reviews       Review[]
+  favorites     FavoriteService[]
+  messages      Message[] @relation("UserMessages")
+  sentThreads   MessageThread[] @relation("ThreadCreators")
+  reviewHelpful ReviewHelpful[]
+  threadParticipants ThreadParticipant[]
+  contactLogs   ServiceContactLog[]
+}
+
+model Service {
+  id            String    @id @default(cuid())
+  name          String
+  category      String
+  description   String?
+  phone         String?
+  website       String?
+  email         String?
+  locationLat   Float?
+  locationLng   Float?
+  addressLine1  String?
+  addressLine2  String?
+  city          String?
+  state         String?
+  postalCode    String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  reviews       Review[]
+  favorites     FavoriteService[]
+  contactLogs   ServiceContactLog[]
+  offerings     ServiceOffering[]
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  service    Service  @relation(fields: [serviceId], references: [id])
+  serviceId  String
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  rating     Int
+  title      String?
+  body       String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  helpful    ReviewHelpful[]
+
+  @@index([serviceId])
+  @@index([userId, createdAt])
+}
+
+model ReviewHelpful {
+  id        String  @id @default(cuid())
+  review    Review  @relation(fields: [reviewId], references: [id])
+  reviewId  String
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime @default(now())
+  @@unique([reviewId, userId])
+}
+
+model FavoriteService {
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String
+  service   Service @relation(fields: [serviceId], references: [id])
+  serviceId String
+  createdAt DateTime @default(now())
+
+  @@id([userId, serviceId])
+}
+
+model MessageThread {
+  id           String       @id @default(cuid())
+  createdAt    DateTime     @default(now())
+  creator      User?        @relation("ThreadCreators", fields: [creatorId], references: [id])
+  creatorId    String?
+  messages     Message[]
+  participants ThreadParticipant[]
+}
+
+model ThreadParticipant {
+  id         String        @id @default(cuid())
+  thread     MessageThread @relation(fields: [threadId], references: [id])
+  threadId   String
+  user       User          @relation(fields: [userId], references: [id])
+  userId     String
+  lastReadAt DateTime?     
+  @@unique([threadId, userId])
+}
+
+model Message {
+  id        String        @id @default(cuid())
+  thread    MessageThread @relation(fields: [threadId], references: [id])
+  threadId  String
+  sender    User          @relation("UserMessages", fields: [senderId], references: [id])
+  senderId  String
+  body      String
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  edited    Boolean       @default(false)
+  deleted   Boolean       @default(false)
+
+  @@index([threadId, createdAt])
+}
+
+model ServiceContactLog {
+  id        String   @id @default(cuid())
+  service   Service  @relation(fields: [serviceId], references: [id])
+  serviceId String
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?
+  channel   String   // e.g. phone, email, website
+  createdAt DateTime @default(now())
+  notes     String?
+
+  @@index([serviceId])
+}
+
+model ServiceCategory {
+  id          String        @id @default(cuid())
+  name        String        @unique
+  description String?
+  serviceTypes ServiceType[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model ServiceType {
+  id          String            @id @default(cuid())
+  name        String
+  description String?
+  category    ServiceCategory   @relation(fields: [categoryId], references: [id])
+  categoryId  String
+  offerings   ServiceOffering[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  @@unique([name, categoryId])
+}
+
+model ServiceOffering {
+  id           String      @id @default(cuid())
+  service      Service     @relation(fields: [serviceId], references: [id])
+  serviceId    String
+  serviceType  ServiceType @relation(fields: [serviceTypeId], references: [id])
+  serviceTypeId String
+  active       Boolean     @default(true)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  @@unique([serviceId, serviceTypeId])
+}
