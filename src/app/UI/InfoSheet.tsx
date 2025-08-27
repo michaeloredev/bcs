@@ -30,7 +30,7 @@ const InfoSheet: React.FC<InfoSheetProps> = ({ content, onServiceItemClick }) =>
       <ul className="list-disc pl-5 space-y-2">
         {content.services.map((service) => (
           <li 
-            key={service} 
+            key={`${content.title}-${service}`}
             className="text-lg text-gray-700 cursor-pointer hover:text-primary hover:font-semibold transition-colors duration-200"
             onClick={() => onServiceItemClick?.(service)}
           >

@@ -1,0 +1,26 @@
+{
+  "../node_modules/dash-video-element/dist/dash-video-element.js -> dashjs": {
+    "id": "../node_modules/dash-video-element/dist/dash-video-element.js -> dashjs",
+    "files": [
+      "static/chunks/_app-pages-browser_node_modules_dashjs_dist_modern_esm_dash_all_min_js.js"
+    ]
+  },
+  "../node_modules/next-video/dist/components/players/media/index.js -> @mux/mux-video/react": {
+    "id": "../node_modules/next-video/dist/components/players/media/index.js -> @mux/mux-video/react",
+    "files": [
+      "static/chunks/_app-pages-browser_node_modules_mux_mux-video_dist_react_mjs.js"
+    ]
+  },
+  "../node_modules/next-video/dist/components/players/media/index.js -> dash-video-element/react": {
+    "id": "../node_modules/next-video/dist/components/players/media/index.js -> dash-video-element/react",
+    "files": [
+      "static/chunks/_app-pages-browser_node_modules_dash-video-element_dist_react_js.js"
+    ]
+  },
+  "../node_modules/next-video/dist/components/players/media/index.js -> hls-video-element/react": {
+    "id": "../node_modules/next-video/dist/components/players/media/index.js -> hls-video-element/react",
+    "files": [
+      "static/chunks/_app-pages-browser_node_modules_hls-video-element_dist_react_js.js"
+    ]
+  }
+}

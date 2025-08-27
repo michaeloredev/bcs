@@ -94,10 +94,10 @@ const ServiceDetailsPanel: React.FC<ServiceDetailsPanelProps> = ({
 
   const providers = getServiceProviders(serviceName);
 
-  const renderStars = (rating: number) => {
+  const renderStars = (providerId: string, rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
       <svg
-        key={i}
+        key={`${providerId}-star-${i}`}
         className={`h-4 w-4 ${i < Math.floor(rating) ? 'text-yellow-400' : 'text-gray-300'}`}
         fill="currentColor"
         viewBox="0 0 20 20"
@@ -183,7 +183,7 @@ const ServiceDetailsPanel: React.FC<ServiceDetailsPanelProps> = ({
                       
                       <div className="flex items-center gap-2 mb-2">
                         <div className="flex items-center gap-1">
-                          {renderStars(provider.rating)}
+                          {renderStars(provider.id, provider.rating)}
                         </div>
                         <span className="text-sm font-medium text-gray-900">{provider.rating}</span>
                         <span className="text-sm text-gray-500">({provider.reviews} reviews)</span>
@@ -194,7 +194,7 @@ const ServiceDetailsPanel: React.FC<ServiceDetailsPanelProps> = ({
                       <div className="flex flex-wrap gap-2 mb-3">
                         {provider.specialties.map((specialty) => (
                           <span
-                            key={specialty}
+                            key={`${provider.id}-${specialty}`}
                             className="px-2 py-1 bg-primary/10 text-primary text-xs rounded-full"
                           >
                             {specialty}
